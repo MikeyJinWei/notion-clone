@@ -20,6 +20,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { useEffect, useState } from "react";
+import SidebarOption from "./SidebarOption";
 
 interface RoomDocument extends DocumentData {
   createdAt: string;
@@ -83,6 +84,22 @@ const Sidebar = () => {
       <NewDocumentButton />
 
       {/* User Documents */}
+      <div className="py-4 md:max-w-36 space-y-4 flex flex-col">
+        {groupedData.owner.length === 0 ? (
+          <h2 className="text-sm font-semibold text-gray-500">
+            No documents found
+          </h2>
+        ) : (
+          <>
+            <h2 className="text-sm font-semibold text-gray-500">
+              My Documents
+            </h2>
+            {groupedData.owner.map((doc) => (
+              <SidebarOption key={doc.id} id={doc.id} href={`/doc/${doc.id}`} />
+            ))}
+          </>
+        )}
+      </div>
       {/* List */}
 
       {/* Share */}
