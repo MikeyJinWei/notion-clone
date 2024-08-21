@@ -7,6 +7,7 @@ import {
   UserButton,
   useUser,
 } from "@clerk/nextjs";
+import Breadcrumbs from "./Breadcrumbs";
 
 const Header = () => {
   const { user } = useUser();
@@ -20,7 +21,7 @@ const Header = () => {
         </h1>
       )}
 
-      {/* Breadcrumbs */}
+      <Breadcrumbs />
 
       <div>
         <SignedOut>
