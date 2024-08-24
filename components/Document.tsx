@@ -5,6 +5,7 @@ import { Input } from "./ui/input";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { useDocumentData } from "react-firebase-hooks/firestore";
+import Editor from "./Editor";
 
 const Document = ({ id }: { id: string }) => {
   // init data
@@ -33,7 +34,7 @@ const Document = ({ id }: { id: string }) => {
   };
 
   return (
-    <div>
+    <div className="p-5 h-full flex-1 bg-white">
       <div className="mx-auto pb-5 max-w-6xl flex justify-between ">
         <form onSubmit={updateTitle} className="space-x-2 flex-1 flex">
           {/* update title... */}
@@ -52,6 +53,7 @@ const Document = ({ id }: { id: string }) => {
       </div>
 
       {/* Collaborative Editor */}
+      <Editor />
     </div>
   );
 };
