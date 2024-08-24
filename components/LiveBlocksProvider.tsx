@@ -1,4 +1,5 @@
 "use client";
+
 import { LiveblocksProvider } from "@liveblocks/react/suspense";
 
 const LiveBlocksProvider = ({ children }: { children: React.ReactNode }) => {
@@ -6,7 +7,7 @@ const LiveBlocksProvider = ({ children }: { children: React.ReactNode }) => {
     throw new Error("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is not set");
   }
   return (
-    <LiveblocksProvider throttle={16} authEndpoint="/auth-endpoint">
+    <LiveblocksProvider throttle={16} authEndpoint={"/api/auth-endpoint"}>
       {children}
     </LiveblocksProvider>
   );
