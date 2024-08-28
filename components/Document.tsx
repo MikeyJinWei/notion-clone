@@ -1,4 +1,5 @@
 "use client";
+
 import { FormEvent, useEffect, useState, useTransition } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -6,8 +7,13 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import Editor from "./Editor";
+import useOwner from "@/lib/useOwner";
+import DeleteDocument from "./DeleteDocument";
 
 const Document = ({ id }: { id: string }) => {
+  // auth
+  const isOwner = useOwner(); // 判斷當前登錄用戶是否為此文件的擁有者
+
   // init data
   const [data, loading, error] = useDocumentData(doc(db, "documents", id));
 
@@ -42,8 +48,15 @@ const Document = ({ id }: { id: string }) => {
           <Button disabled={isUpdating} type="submit">
             {isUpdating ? "Updating..." : "Update"}
           </Button>
-          {/* If */}
-          {/* isOwner && inviteUser, deleteDocument */}
+          {/* If isOwner */}
+          {isOwner && (
+            <>
+              {/*  inviteUser */}
+
+              {/* deleteDocument */}
+              <DeleteDocument />
+            </>
+          )}
         </form>
       </div>
 

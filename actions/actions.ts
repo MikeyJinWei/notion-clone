@@ -1,6 +1,7 @@
 "use server";
 
 import { adminDb } from "@/firebase/firebase-admin";
+import liveblocks from "@/lib/liveblocks/liveblocks";
 import { auth } from "@clerk/nextjs/server";
 
 export async function createNewDocument() {
@@ -35,4 +36,33 @@ export async function createNewDocument() {
     });
 
   return { docId: docRef.id }; // 導出包含新創建文件 ID 的物件
+}
+
+export async function deleteDocument(roomId: string) {
+  auth().protect(); // 確保使用者已登入
+
+  try {
+    // 刪除位於 documents 集合中的文件本身
+    await adminDb.collection("documents").doc(roomId).delete();
+
+    // 刪除位於 user 集合中的 rooms 集合（曾引用文件 id 創建資料）
+    const query = await adminDb
+      .collectionGroup("rooms")
+      .where("roomId", "==", roomId)
+      .get();
+
+    const batch = adminDb.batch();
+
+    query.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    // 刪除 liveblocks 所建立的協作空間
+    await liveblocks.deleteRoom(roomId);
+
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false };
+  }
 }
