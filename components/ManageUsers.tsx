@@ -11,7 +11,11 @@ import {
 import { Button } from "./ui/button";
 import { FormEvent, useState, useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { deleteDocument, inviteUserToDocument } from "@/actions/actions";
+import {
+  deleteDocument,
+  inviteUserToDocument,
+  removeUserFromDocument,
+} from "@/actions/actions";
 import { toast } from "sonner";
 import { Input } from "./ui/input";
 import { useUser } from "@clerk/nextjs";
@@ -30,9 +34,20 @@ const ManageUsers = () => {
   const [usersInRoom] = useCollection(
     user && query(collectionGroup(db, "rooms"), where("roomId", "==", room.id)) // 查詢 firestore rooms 集合群組中與 roomId 相符項
   );
-  // 刪除使用者
-  const handleDelete = async (e: FormEvent) => {
-    e.preventDefault();
+  // 移除指定用戶對當前文件（協作空間）的訪問權限
+  const handleDelete = async (userId: string) => {
+    // 開始移除的過渡
+    startTransition(async () => {
+      if (!user) return; // 確保用戶已登錄
+
+      const { success } = await removeUserFromDocument(room.id, userId);
+
+      if (success) {
+        toast.success("User removed from room successfully!");
+      } else {
+        toast.success("Failed to remove user from room!");
+      }
+    });
   };
 
   // 開關 Dialog
@@ -53,7 +68,40 @@ const ManageUsers = () => {
 
         <hr />
 
-        <div>{/* UsersInRoom  */}</div>
+        <div className="flex flex-col space-y-2">
+          {usersInRoom?.docs.map((doc) => (
+            <div
+              key={doc.data().userId}
+              className="flex items-center justify-between"
+            >
+              <p className="font-light">
+                {/* userId 與當前登錄用戶的電子郵件相符項多顯示 'You' 字串 */}
+                {doc.data().userId === user?.emailAddresses.toString()
+                  ? `You (${doc.data().userId})`
+                  : // 非登錄用戶直接顯示 userId
+                    doc.data().userId}
+              </p>
+
+              <div className="flex items-center gap-2">
+                <Button variant="outline">{doc.data().role}</Button>
+
+                {/* 確認是否屬文件擁有者 */}
+                {isOwner &&
+                  // 只有當前用戶不是 DB 中的用戶才顯示刪除按鈕，i.e. 不移除自身權限
+                  doc.data().userId !== user?.emailAddresses.toString() && (
+                    <Button
+                      onClick={() => handleDelete(doc.data().userId)}
+                      disabled={isPending}
+                      variant="destructive"
+                      size="sm"
+                    >
+                      {isPending ? "Removing" : "X"}
+                    </Button>
+                  )}
+              </div>
+            </div>
+          ))}
+        </div>
       </DialogContent>
     </Dialog>
   );

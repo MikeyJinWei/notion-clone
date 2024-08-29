@@ -97,3 +97,25 @@ export async function inviteUserToDocument(roomId: string, email: string) {
     return { success: false };
   }
 }
+
+export async function removeUserFromDocument(roomId: string, email: string) {
+  auth().protect(); // 確保用戶已登入
+
+  console.log("removeUserFromDocument", roomId, email);
+
+  try {
+    // 以 userId/email 從 users 集合中尋找用戶
+    await adminDb
+      .collection("users")
+      .doc(email)
+      // 從該用戶的 rooms 子集合中尋找與 roomId 相符項目
+      .collection("rooms")
+      .doc(roomId)
+      .delete();
+
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false };
+  }
+}
