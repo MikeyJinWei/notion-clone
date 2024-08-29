@@ -8,6 +8,8 @@ export async function createNewDocument() {
   // 客戶端尚未登入時令其無法創建新文件
   auth().protect();
 
+  console.log("createNewDocument");
+
   // 解構先前對 session token 的設定
   const { sessionClaims } = await auth();
 
@@ -41,6 +43,8 @@ export async function createNewDocument() {
 export async function deleteDocument(roomId: string) {
   auth().protect(); // 確保使用者已登入
 
+  console.log("deleteDocument", roomId);
+
   try {
     // 刪除位於 documents 集合中的文件本身
     await adminDb.collection("documents").doc(roomId).delete();
@@ -59,6 +63,33 @@ export async function deleteDocument(roomId: string) {
 
     // 刪除 liveblocks 所建立的協作空間
     await liveblocks.deleteRoom(roomId);
+
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false };
+  }
+}
+
+export async function inviteUserToDocument(roomId: string, email: string) {
+  auth().protect(); // 確保用戶已登入
+
+  console.log("inviteUserToDocument", roomId, email);
+
+  try {
+    // 從 users 集合中尋找與邀請的用戶相符的 email
+    await adminDb
+      .collection("users")
+      .doc(email)
+      // 在該用戶的 rooms 子集合以 roomId 創建協作權限資訊
+      .collection("rooms")
+      .doc(roomId)
+      .set({
+        userId: email,
+        role: "editor",
+        createdAt: new Date(),
+        roomId,
+      });
 
     return { success: true };
   } catch (error) {

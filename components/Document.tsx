@@ -9,6 +9,7 @@ import { useDocumentData } from "react-firebase-hooks/firestore";
 import Editor from "./Editor";
 import useOwner from "@/lib/useOwner";
 import DeleteDocument from "./DeleteDocument";
+import InviteUser from "./InviteUser";
 
 const Document = ({ id }: { id: string }) => {
   // auth
@@ -43,17 +44,14 @@ const Document = ({ id }: { id: string }) => {
     <div className="p-5 h-full flex-1 bg-white">
       <div className="mx-auto pb-5 max-w-6xl flex justify-between ">
         <form onSubmit={updateTitle} className="space-x-2 flex-1 flex">
-          {/* update title... */}
           <Input value={input} onChange={(e) => setInput(e.target.value)} />
           <Button disabled={isUpdating} type="submit">
             {isUpdating ? "Updating..." : "Update"}
           </Button>
-          {/* If isOwner */}
+
           {isOwner && (
             <>
-              {/*  inviteUser */}
-
-              {/* deleteDocument */}
+              <InviteUser />
               <DeleteDocument />
             </>
           )}

@@ -26,7 +26,6 @@ const DeleteDocument = () => {
   const router = useRouter(); // 存取路由
   const handleDelete = async () => {
     const roomId = pathname.split("/").pop(); // ['', 'doc', 'roomId'] -> 'roomId
-
     if (!roomId) return;
 
     startTransition(async () => {
