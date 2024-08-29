@@ -10,6 +10,7 @@ import Editor from "./Editor";
 import useOwner from "@/lib/useOwner";
 import DeleteDocument from "./DeleteDocument";
 import InviteUser from "./InviteUser";
+import ManageUsers from "./ManageUsers";
 
 const Document = ({ id }: { id: string }) => {
   // auth
@@ -58,8 +59,8 @@ const Document = ({ id }: { id: string }) => {
         </form>
       </div>
 
-      <div>
-        {/* ManageUsers */}
+      <div className="mb-5 mx-auto max-w-6xl flex items-center justify-between">
+        <ManageUsers />
         {/* Avatar */}
       </div>
 
