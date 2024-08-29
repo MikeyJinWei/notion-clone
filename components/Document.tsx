@@ -11,6 +11,7 @@ import useOwner from "@/lib/useOwner";
 import DeleteDocument from "./DeleteDocument";
 import InviteUser from "./InviteUser";
 import ManageUsers from "./ManageUsers";
+import Avatars from "./Avatars";
 
 const Document = ({ id }: { id: string }) => {
   // auth
@@ -61,7 +62,7 @@ const Document = ({ id }: { id: string }) => {
 
       <div className="mb-5 mx-auto max-w-6xl flex items-center justify-between">
         <ManageUsers />
-        {/* Avatar */}
+        <Avatars />
       </div>
 
       {/* Collaborative Editor */}
