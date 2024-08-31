@@ -12,6 +12,7 @@ import { BlockNoteView } from "@blocknote/shadcn";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
 import stringToColor from "@/lib/stringToColor";
+import TranslateDocument from "./TranslateDocument";
 
 const Editor = () => {
   const room = useRoom(); // 存取協作環境的狀態、資料
@@ -83,9 +84,9 @@ const Editor = () => {
   return (
     <div className="mx-auto max-w-6xl ">
       <div className="mb-10 flex items-center justify-end gap-2">
-        {/* TranslateDocument feat via AI */}
+        <TranslateDocument doc={doc} />
 
-        {/* ChatToDocument feat via AI */}
+        {/* ChatToDocument AI */}
 
         {/* Light/Dark mode toggle */}
         <Button onClick={() => setDarkMode((prev) => !prev)} className={style}>
