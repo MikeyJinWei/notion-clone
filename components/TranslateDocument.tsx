@@ -81,10 +81,11 @@ const TranslateDocument = ({ doc }: { doc: Y.Doc }) => {
       );
 
       if (res.ok) {
-        // const id = toast.loading('Translating...')
         const { translated_text } = await res.json();
         setSummary(translated_text);
         toast.success("Translated summary success!");
+      } else {
+        toast.error("Failed to get an answer. Please try again.");
       }
     });
   };
